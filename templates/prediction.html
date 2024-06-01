@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+      integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined"
+      rel="stylesheet"
+    />
+
+    <title>Potato Leaf Disease Detection</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+      @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+      body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Montserrat", sans-serif;
+      }
+      .form-container {
+        width: 100vw;
+        height: 100vh;
+        /* background-color: #254152; */
+        background-image: url("https://m.foolcdn.com/media/dubs/images/Farm.width-880.jpg");
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+      .upload-files-container {
+        background-color: #f7fff7;
+        width: 420px;
+        padding: 30px 60px;
+        border-radius: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 10px 20px,
+          rgba(0, 0, 0, 0.28) 0px 6px 6px;
+        opacity: 0.8;
+      }
+      .drag-file-area {
+        border: 2px dashed #7b2cbf;
+        border-radius: 40px;
+        margin: 10px 0 15px;
+        padding: 30px 50px;
+        width: 350px;
+        text-align: center;
+      }
+      .drag-file-area .upload-icon {
+        font-size: 50px;
+      }
+      .drag-file-area h3 {
+        font-size: 26px;
+        margin: 15px 0;
+      }
+      .drag-file-area label {
+        font-size: 18px;
+      }
+      .drag-file-area label .browse-files-text {
+        color: #7b2cbf;
+        font-weight: bolder;
+        cursor: pointer;
+      }
+      .browse-files span {
+        position: relative;
+        top: -25px;
+      }
+      .default-file-input {
+        opacity: 0;
+      }
+      .cannot-upload-message {
+        background-color: #ffc6c4;
+        font-size: 17px;
+        display: flex;
+        align-items: center;
+        margin: 5px 0;
+        padding: 5px 10px 5px 30px;
+        border-radius: 5px;
+        color: #bb0000;
+        display: none;
+      }
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      .cannot-upload-message span,
+      .upload-button-icon {
+        padding-right: 10px;
+      }
+      .cannot-upload-message span:last-child {
+        padding-left: 20px;
+        cursor: pointer;
+      }
+      .file-block {
+        color: #f7fff7;
+        background-color: #7b2cbf;
+        transition: all 1s;
+        width: 390px;
+        position: relative;
+        display: none;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 0 15px;
+        padding: 10px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+      }
+      .file-info {
+        display: flex;
+        align-items: center;
+        font-size: 15px;
+      }
+      .file-icon {
+        margin-right: 10px;
+      }
+      .file-name,
+      .file-size {
+        padding: 0 3px;
+      }
+      .remove-file-icon {
+        cursor: pointer;
+      }
+      .progress-bar {
+        display: flex;
+        position: absolute;
+        bottom: 0;
+        left: 4.5%;
+        width: 0;
+        height: 5px;
+        border-radius: 25px;
+        background-color: #4bb543;
+      }
+      .upload-button {
+        font-family: "Montserrat";
+        background-color: #7b2cbf;
+        color: #f7fff7;
+        display: flex;
+        align-items: center;
+        font-size: 18px;
+        border: none;
+        border-radius: 20px;
+        margin: 10px;
+        padding: 7.5px 50px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    {% if data %}
+    <form
+      class="form-container"
+      action="/"
+      method="post"
+      enctype="multipart/form-data"
+      id="myform"
+    >
+      {% if data.prediction=="Early Blight" %}
+      <div class="upload-files-container">
+        <div class="drag-file-area" style="border: 2px dashed #ea8a00">
+          <img id="image" src="{{ data.image }}" alt="...." width="256px" />
+          <h3 class="dynamic-message" style="color: #ea8a00">
+            {{ data.acuuracy }}%
+          </h3>
+          <button
+            type="button"
+            class="upload-button"
+            style="
+              margin-left: 20px;
+              background-color: #ea8a00;
+              font-size: 20px;
+            "
+          >
+            {{ data.prediction }}
+          </button>
+        </div>
+
+        <a href="/" class="dynamic-message" style="font-size: xx-large"
+          ><i class="bi bi-arrow-repeat"></i
+        ></a>
+      </div>
+      {% endif %} {% if data.prediction=="Late Blight" %}
+      <div class="upload-files-container">
+        <div class="drag-file-area" style="border: 2px dashed #ea1200">
+          <img id="image" src="{{ data.image }}" alt="...." width="256px" />
+          <h3 class="dynamic-message" style="color: #ea1200">
+            {{ data.acuuracy }}%
+          </h3>
+          <button
+            type="button"
+            class="upload-button"
+            style="
+              margin-left: 20px;
+              background-color: #ea1200;
+              font-size: 20px;
+            "
+          >
+            {{ data.prediction }}
+          </button>
+        </div>
+
+        <a href="/" class="dynamic-message" style="font-size: xx-large"
+          ><i class="bi bi-arrow-repeat"></i
+        ></a>
+      </div>
+      {% endif %} {% if data.prediction=="Healthy" %}
+      <div class="upload-files-container">
+        <div class="drag-file-area" style="border: 2px dashed #00c421">
+          <img id="image" src="{{ data.image }}" alt="...." width="256px" />
+          <h3 class="dynamic-message" style="color: #00c421">
+            {{ data.acuuracy }}%
+          </h3>
+          <button
+            type="button"
+            class="upload-button"
+            style="
+              margin-left: 20px;
+              background-color: #00c421;
+              font-size: 20px;
+            "
+          >
+            {{ data.prediction }}
+          </button>
+        </div>
+
+        <a href="/" class="dynamic-message" style="font-size: xx-large"
+          ><i class="bi bi-arrow-repeat"></i
+        ></a>
+      </div>
+      {% endif %}
+    </form>
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+      crossorigin="anonymous"
+    ></script>
+    {% endif %}
+  </body>
+</html>
