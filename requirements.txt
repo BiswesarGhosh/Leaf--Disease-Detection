@@ -1,4 +1,4 @@
-pip install -U Flask
-pip install tensorflow
-pip install numpy
-pip install gunicorn
+Flask
+tensorflow
+numpy
+Gunicorn
